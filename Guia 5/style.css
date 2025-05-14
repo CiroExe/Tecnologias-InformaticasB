@@ -1,0 +1,40 @@
+:root{
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(to bottom right, #000, #2b6cb0); /* gris, negro, azul medio */
+      color: lightgrey; /* opcional: para que el texto se vea bien */
+      font-family: sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+    margin: auto;
+    align-items: center;
+    margin-top: 20px;
+}
+th, td {
+    padding: 10px;
+} 
+
+.insert{
+    display: flex;
+    justify-content: center;
+}
+
+.insert:hover {
+    color: grey;
+    margin: auto;
+    align-items: center;
+    font-size: larger;
+}
+
+a:visited{
+    color: white;
+}
+
+h2{
+    text-align: center;
+    text-decoration: underline;
+}
+@import url(w3.css);
