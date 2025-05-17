@@ -1,0 +1,76 @@
+1_ Que hace este código? :
+
+$uri = parse_url($_SERVER['REQUEST_URL']);
+parse_str($uri['query'], $query_arr);
+$modulo = $query_arr['module'];
+
+$ruta = "./routes/{$modulo}Routes.php"
+
+if (file_existe($ruta)){
+    require_once($ruta);    
+}
+else{
+    http_response_code(404);
+    echo "<div>Error 404</div>";
+    echo json_encode("error" => "ruta no encontrada");
+}
+?>
+
+-$_SERVER['REQUEST_URI'] contiene la URL completa que el usuario pidió (ej: /index.php?module=students).
+
+-parse_url() divide esa URL en partes. Por ejemplo:
+	// Si la URL es /index.php?module=students
+	$uri = [
+  		'path' => '/index.php',
+  		'query' => 'module=students'
+	        ];
+
+-parse_str($uri['query'], $query_arr);
+	parse_str() convierte una cadena de query (module=students) en un array asociativo:
+
+	$query_arr = [
+ 	 "module" => "clientes"
+	];	
+
+-$modulo = $query_arr['module'];
+
+	Guarda el nombre del módulo que viene por la URL. Ejemplo: "clientes".
+
+-$ruta = "./routes/{$modulo}Routes.php";
+
+	Construye una ruta al archivo PHP del módulo.
+	Si $modulo = "clientes", entonces $ruta = "./routes/clientesRoutes.php".
+
+-if (file_exists($ruta)) {
+    require_once($ruta);
+}
+	Si ese archivo existe, lo incluye una sola vez (para evitar duplicados). Esto es común para cargar rutas o controladores.
+
+-else {
+    http_response_code(404);
+    echo "<div>Error 404</div>";
+    echo json_encode(["error" => "ruta no encontrada"]);
+ }
+
+	Si el archivo no existe, muestra un error 404.
+
+	También devuelve un mensaje JSON con el error (útil para APIs).
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2_ Como es posible que un atacante modifica una consulta?
+
+Cuando se insertan datos del usuario directamente en una consulta SQL sin validación, el atacante puede modificar la consulta que ejecuta el servidor.
+
+Supongamos : 	$id = $_GET['id']; // por ejemplo, ?id=1
+		$sql = "SELECT * FROM students WHERE id = $id";
+		$result = mysqli_query($conn, $sql);
+
+La consulta se convierte en -> SELECT * FROM students WHERE id = 1 OR 1=1 entonces => 1=1 siempre es verdadero, así que esta consulta devuelve todos los estudiantes, no solo el de ID 1. Por lo tanto el atacante puede ver información que no debería 
+
+Hubiese sido peor si la sentencia SQL hubiese sido una eliminación ya que puede eliminar todos los registros.
+
+Para evitar eso uso consultas preparadas con marcadores de posición "?" : $stmt = conn->prepare("SELECT * FROM students WHERE id = ?");
+									  $stmt-> bind_param("i", $id);
+									  $stmt->execute();
+
+Asi no importa lo que el usuario ponga para modificar la URL ya que NO se concatena el texto directamente en la consulta y el valor se escapa y se trata como dato, no como código SQL.
