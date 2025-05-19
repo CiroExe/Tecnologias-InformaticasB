@@ -38,8 +38,7 @@ $modulo=$query_array['module'];
        ];
 */
 
-$archivo='./routes/studentsRoutes.php' //Lo preparo para modulos futuros. 
-$ruta = "/routes/{$modulo}Routes.php"
+$ruta = "/routes/{$modulo}Routes.php" //Lo preparo para futuros modulos
 
 if (file_exists($ruta)){ // Analiza si el archivo existe y si no es asi agrega un manejador de respuestas 404 si la ruta no existe.
     require_once($ruta);
