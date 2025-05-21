@@ -1,37 +1,40 @@
 <?php
-
-function getAllSubjects($conn){
-    return $conn->query('SELECT * FROM subjects');
+function getAllSubjects($conn) 
+{
+    $sql = "SELECT * FROM subjects";
+    return $conn->query($sql);
 }
 
-function getSubjectById($conn, $id){
-    $sql="SELECT * FROM subjects WHERE idSubject =?" //El signo de pregunta significa un marcador de posicion usado para evitar inyecciones SQL
+function getSubjectById($conn, $id) 
+{
+    $sql = "SELECT * FROM subjects WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result();
 }
 
-function createSubject($conn, $subjectName){
-    $sql = "INSERT INTO subjects (subjectName) VALUES (?)";
+function createSubject($conn, $name) 
+{
+    $sql = "INSERT INTO subjects (name) VALUES (?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $subjectName);
-    $stmt->execute();
-    return $stmt->get_result();
-}
-
-function updateSubject($conn, $id, $subjectName){
-    $sql ="UPDATE subjects SET subjectName = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $subjectName, $id);
-    return   $stmt->execute();
-}
-
-function deleteSubject($conn, $id){
-    $sql = "DELETE FROM subjects WHERE id = ?"
-    $stmt=$conn->prepare($sql);
-    $stmt->bind_param("i", $id);
+    $stmt->bind_param("s", $name);
     return $stmt->execute();
 }
 
+function updateSubject($conn, $id, $name) 
+{
+    $sql = "UPDATE subjects SET name = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $name, $id);
+    return $stmt->execute();
+}
+
+function deleteSubject($conn, $id) 
+{
+    $sql = "DELETE FROM subjects WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
 ?>
