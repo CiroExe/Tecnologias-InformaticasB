@@ -8,5 +8,7 @@
 *    Iteration   : 3.0 ( prototype )
 */
 
+//Importa la funcion 'createAPI' de la "fabrica" de APIS.
 import { createAPI } from './apiFactory.js';
+//Exporta para que otros modulos puedan ejecutar la funcion con el nombre subjectsAPI.
 export const subjectsAPI = createAPI('subjects');

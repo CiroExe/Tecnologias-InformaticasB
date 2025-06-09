@@ -23,33 +23,59 @@ function setupSubjectFormHandler()
   form.addEventListener('submit', async e => 
   {
         e.preventDefault();
+        let mensajeError = document.getElementById('mensaje');
+
+        if (!mensajeError) {
+                 mensajeError = document.createElement('p');
+                 mensajeError.id = 'mensaje';
+                 mensajeError.style.color = 'red';
+                 mensajeError.style.marginTop = '10px';
+                 form.appendChild(mensajeError);
+        }
         const subject = 
         {
             id: document.getElementById('subjectId').value.trim(),
             name: document.getElementById('name').value.trim()
-        };
-
-        try 
-        {
-            if (subject.id) 
+        }; 
+        if(existeMateria(subject.name)){
+            mensajeError.textContent = 'La materia ya existe en la tabla.';
+            return;
+        }else{
+            try 
             {
+                if (subject.id) 
+                {
                 await subjectsAPI.update(subject);
-            }
-            else
-            {
-                await subjectsAPI.create(subject);
-            }
+                }
+                 else
+                {
+                     await subjectsAPI.create(subject);
+                }
             
-            form.reset();
-            document.getElementById('subjectId').value = '';
-            loadSubjects();
-        }
-        catch (err)
-        {
-            console.error(err.message);
+                form.reset();
+                document.getElementById('subjectId').value = '';
+                mensajeError.textContent='';
+                loadSubjects();
+           }
+            catch (err)
+            {
+              console.error(err.message)
+            }
         }
   });
 }
+
+function existeMateria(nombre) {
+  const filas = document.getElementById('subjectTableBody').getElementsByTagName('tr');
+  for (let fila of filas) {
+    const nombreEnTabla = fila.cells[0].textContent.trim().toLowerCase();
+    if (nombreEnTabla === nombre.trim().toLowerCase()) {
+      return true;
+    }
+  }
+  return false;
+}
+
 
 function setupCancelHandler()
 {
